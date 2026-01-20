@@ -21,23 +21,23 @@ export default function Home() {
     <div className="relative overflow-hidden bg-white">
       {/* Background Decor */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] pointer-events-none overflow-hidden">
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-indigo-50 rounded-full blur-[120px] opacity-60" />
-        <div className="absolute top-[20%] -right-[10%] w-[30%] h-[30%] bg-purple-50 rounded-full blur-[100px] opacity-40" />
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-green-50 rounded-full blur-[120px] opacity-60" />
+        <div className="absolute top-[20%] -right-[10%] w-[30%] h-[30%] bg-emerald-50 rounded-full blur-[100px] opacity-40" />
       </div>
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 px-6">
         <div className="container mx-auto">
           <div className="max-w-4xl mx-auto text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100 mb-8"
-            >
-              <Zap className="w-4 h-4" />
-              <span className="text-sm font-semibold tracking-wide uppercase">Next Generation Marketplace</span>
-            </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100 mb-8"
+              >
+                <Zap className="w-4 h-4" />
+                <span className="text-sm font-semibold tracking-wide uppercase">The Student Marketplace</span>
+              </motion.div>
             
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
@@ -45,7 +45,7 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-5xl lg:text-7xl font-extrabold text-slate-900 tracking-tight leading-[1.1] mb-8"
             >
-              Buy and Sell with <span className="bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600">Pure Confidence</span>
+              Your Campus <span className="bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-indigo-500">Essential Shop</span>
             </motion.h1>
 
             <motion.p
@@ -54,7 +54,7 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed"
             >
-              Experience a custom-built marketplace platform designed for speed, security, and seamless interaction. Start your professional journey today.
+              The safest and easiest way for students to buy, sell, and trade. From textbooks to furniture, find everything you need for your university life.
             </motion.p>
 
             <motion.div

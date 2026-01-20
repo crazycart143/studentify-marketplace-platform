@@ -5,8 +5,8 @@ import { MessageCircle, ShoppingBag, User } from "lucide-react";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Messages | MarketPro",
-  description: "Your conversations with buyers and sellers.",
+  title: "Messages | Studentify",
+  description: "Your campus conversations and deals.",
 };
 
 export default async function MessagesPage() {

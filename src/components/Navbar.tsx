@@ -79,7 +79,7 @@ export default function Navbar() {
             <ShoppingBag className="text-white w-6 h-6" />
           </div>
           <span className={`text-2xl font-bold tracking-tight ${isScrolled ? "text-slate-900" : "text-white"}`}>
-            Market<span className="text-indigo-600">Pro</span>
+            Studentify
           </span>
         </Link>
 

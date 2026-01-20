@@ -5,8 +5,8 @@ import Link from "next/link";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Browse Marketplace | MarketPro",
-  description: "Explore thousands of premium listings. Search and filter to find exactly what you need.",
+  title: "Browse Marketplace | Studentify",
+  description: "Explore thousands of premium student listings. Search and filter to find exactly what you need.",
 };
 
 const CATEGORIES = [

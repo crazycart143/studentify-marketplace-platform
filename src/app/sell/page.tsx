@@ -3,8 +3,8 @@ import { Metadata } from "next";
 import { ShoppingBag, ShieldCheck, Zap } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Sell Your Item | MarketPro Marketplace",
-  description: "List your item on MarketPro and reach thousands of potential buyers. Quick, secure, and professional.",
+  title: "Sell an Item | Studentify",
+  description: "List your item on Studentify and reach thousands of students in minutes.",
 };
 
 export default function SellPage() {

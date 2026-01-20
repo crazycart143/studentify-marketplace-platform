@@ -7,8 +7,8 @@ import { Toaster } from "sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MarketPro | Premium Marketplace Platform",
-  description: "The ultimate custom marketplace platform for buyers and sellers.",
+  title: "Studentify | Premium Marketplace for Students",
+  description: "The ultimate marketplace platform for student deals and essentials.",
 };
 
 export default function RootLayout({
@@ -30,11 +30,11 @@ export default function RootLayout({
                   <ShoppingBag className="text-white w-5 h-5" />
                 </div>
                 <span className="text-xl font-bold text-slate-900">
-                  Market<span className="text-indigo-600">Pro</span>
+                  Studentify
                 </span>
               </div>
               <p className="text-slate-500 text-sm">
-                &copy; {new Date().getFullYear()} MarketPro. Built for performance and scalability.
+                &copy; {new Date().getFullYear()} Studentify. Built for students, by students.
               </p>
             </div>
           </div>

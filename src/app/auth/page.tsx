@@ -3,10 +3,12 @@
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { createClient } from '@/lib/supabase';
-import { motion } from 'framer-motion';
-import { ShoppingBag } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { ShoppingBag } from 'lucide-react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 export default function AuthPage() {
   const supabase = createClient();
@@ -40,11 +42,14 @@ export default function AuthPage() {
         className="w-full max-w-md bg-white rounded-3xl shadow-2xl shadow-indigo-100 p-8 relative z-10 border border-slate-100"
       >
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-2xl shadow-lg shadow-indigo-200 mb-4">
-            <ShoppingBag className="text-white w-8 h-8" />
-          </div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Welcome to MarketPro</h1>
-          <p className="text-slate-500 mt-2">Sign in or create an account to continue</p>
+          <Link href="/" className="inline-flex items-center space-x-2 mb-8 group">
+            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-100 group-hover:scale-110 transition-transform">
+              <ShoppingBag className="text-white w-6 h-6" />
+            </div>
+            <span className="text-2xl font-black text-slate-900 tracking-tight">Studentify</span>
+          </Link>
+          <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-3">Welcome to the Campus</h1>
+          <p className="text-slate-500 font-medium">Join thousands of students buying and selling daily.</p>
         </div>
 
         <Auth

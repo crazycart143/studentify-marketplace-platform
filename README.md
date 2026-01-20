@@ -1,6 +1,6 @@
-# MarketPro | Custom Marketplace Platform
+# 🎓 Studentify - The Students Marketplace
 
-MarketPro is a high-performance, premium marketplace platform built with **Next.js 15**, **Supabase**, and **Tailwind CSS**. It is designed for scalability and exceptional user experience.
+A premium, custom-built marketplace platform designed specifically for students to buy and sell campus essentials with confidence.
 
 ## ✨ Core Features (Phase 1)
 
@@ -10,6 +10,17 @@ MarketPro is a high-performance, premium marketplace platform built with **Next.
 - **Multi-Step Listing Flow**: Professional seller interface with real-time image previews and direct Supabase Storage uploads.
 - **Responsive & Accessible**: Mobile-first design with a focus on web accessibility and SEO optimization.
 - **State-of-the-art UI**: Built with Framer Motion animations and a custom design system.
+
+## 🚀 Phase 2 Features
+
+- **Real-Time Messaging**: Integrated instant chat via Supabase Realtime with a dedicated messaging inbox.
+- **Trust & Safety**: 5-star rating system and detailed seller reviews with average rating badges.
+- **Advanced Discovery**: Powerful price range filtering and multiple sorting options (Newest, Price asc/desc).
+- **Pro Management**: Functional "Mark as Sold", relisting, and deletion logic for sellers.
+- **Personalized Profiles**: Custom avatar uploads via Supabase Storage and editable profile settings.
+- **Rich Editing**: Multi-step listing edit system with support for gallery management and image updates.
+- **Premium UX**: Integrated `sonner` notifications, skeleton loading states, and real-time account statistics.
+- **Modern Tech**: Optimized with Tailwind v4 syntax and strictly enforced TypeScript/Linting standards.
 
 ## 🚀 Tech Stack
 
