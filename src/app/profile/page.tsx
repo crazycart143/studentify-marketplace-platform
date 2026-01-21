@@ -17,6 +17,7 @@ import {
 import AvatarUpload from '@/components/AvatarUpload';
 import OffersList from '@/components/OffersList';
 import FavoritesList from '@/components/FavoritesList';
+import SellerAnalytics from '@/components/SellerAnalytics';
 
 export default function ProfilePage() {
   const supabase = createClient();
@@ -157,6 +158,18 @@ export default function ProfilePage() {
                   <div className="text-4xl font-black text-slate-900 mt-2">{stats.messages}</div>
                 </div>
               </div>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 }}
+              className="bg-white rounded-[40px] p-10 border border-slate-100 shadow-sm text-left"
+            >
+              <h2 className="text-2xl font-black text-slate-900 mb-8 flex items-center">
+                Seller Insights
+              </h2>
+              <SellerAnalytics />
             </motion.div>
 
             <motion.div 

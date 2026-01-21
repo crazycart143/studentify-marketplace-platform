@@ -23,6 +23,7 @@ import ReportButton from "@/components/ReportButton";
 import VerificationBadge from "@/components/VerificationBadge";
 import FollowButton from "@/components/FollowButton";
 import SimilarItems from "@/components/SimilarItems";
+import ViewTracker from "@/components/ViewTracker";
 import * as motion from "framer-motion/client";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -69,6 +70,7 @@ export default async function ListingDetailPage({ params, searchParams }: { para
 
   return (
     <div className="min-h-screen bg-slate-50 pt-32 pb-20 px-6">
+      <ViewTracker listingId={listing.id} />
       <div className="container mx-auto max-w-7xl">
         {payment === 'success' && (
           <div className="mb-8 p-6 bg-emerald-50 border border-emerald-100 rounded-[32px] flex items-center justify-between">

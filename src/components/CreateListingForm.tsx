@@ -12,11 +12,15 @@ import {
   Check,
   Upload,
   X,
-  Loader2
+  Loader2,
+  Video,
+  BoxSelect
 } from "lucide-react";
 import { createClient } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import ImageEditor from "./ImageEditor";
+import confetti from "canvas-confetti";
 
 const CATEGORIES = [
   "Electronics", "Fashion", "Home & Garden", "Sports & Outdoors", 
@@ -35,6 +39,7 @@ export default function CreateListingForm() {
   });
   const [images, setImages] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
   
   const supabase = createClient();
   const router = useRouter();
@@ -48,15 +53,35 @@ export default function CreateListingForm() {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files);
       if (images.length + newFiles.length > 8) {
-        toast.error("You can only upload up to 8 images.");
+        toast.error("You can only upload up to 8 items.");
         return;
       }
       setImages(prev => [...prev, ...newFiles]);
       
       const newPreviews = newFiles.map(file => URL.createObjectURL(file));
       setPreviews(prev => [...prev, ...newPreviews]);
-      toast.success(`${newFiles.length} image(s) added.`);
+      
+      // Auto-open editor for the first new image if it's an image
+      if (newFiles[0].type.startsWith('image/')) {
+        setEditingIndex(images.length);
+      }
     }
+  };
+
+  const handleCropConfirm = (blob: Blob) => {
+    if (editingIndex === null) return;
+
+    const croppedFile = new File([blob], images[editingIndex].name, { type: 'image/jpeg' });
+    const newImages = [...images];
+    newImages[editingIndex] = croppedFile;
+    setImages(newImages);
+
+    const newPreviews = [...previews];
+    newPreviews[editingIndex] = URL.createObjectURL(blob);
+    setPreviews(newPreviews);
+
+    setEditingIndex(null);
+    toast.success("Photo optimized!");
   };
 
   const removeImage = (index: number) => {
@@ -112,9 +137,21 @@ export default function CreateListingForm() {
 
       if (insertError) throw insertError;
 
+      // Confetti effect!
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#4f46e5', '#7c3aed', '#ec4899']
+      });
+
       toast.success("Listing published successfully!", { id: toastId });
-      router.push('/profile/listings');
-      router.refresh();
+      
+      // Delay to let the user see the success
+      setTimeout(() => {
+        router.push('/profile/listings');
+        router.refresh();
+      }, 2000);
     } catch (error: any) {
       console.error("Error creating listing:", error.message);
       toast.error(error.message || "Failed to create listing. Please try again.", { id: toastId });
@@ -238,27 +275,63 @@ export default function CreateListingForm() {
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {previews.map((preview, i) => (
-                  <div key={i} className="relative aspect-square rounded-2xl overflow-hidden border border-slate-100 group">
-                    <img src={preview} alt="Preview" className="w-full h-full object-cover" />
-                    <button 
-                      onClick={() => removeImage(i)}
-                      className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
+                {previews.map((preview, i) => {
+                  const isVideo = images[i]?.type.startsWith('video/');
+                  return (
+                    <div key={i} className="relative aspect-square rounded-2xl overflow-hidden border border-slate-100 group">
+                      {isVideo ? (
+                        <video src={preview} className="w-full h-full object-cover" />
+                      ) : (
+                        <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                      )}
+                      
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-2">
+                        {!isVideo && (
+                          <button 
+                            onClick={() => setEditingIndex(i)}
+                            className="p-2 bg-white text-slate-900 rounded-xl hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
+                            title="Crop Image"
+                          >
+                            <BoxSelect className="w-5 h-5" />
+                          </button>
+                        )}
+                        <button 
+                          onClick={() => removeImage(i)}
+                          className="p-2 bg-white text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm"
+                          title="Remove"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+
+                      {isVideo && (
+                        <div className="absolute bottom-2 left-2 p-1 bg-black/50 backdrop-blur-md rounded-lg text-white">
+                          <Video className="w-3 h-3" />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
                 
                 {previews.length < 8 && (
                   <label className="aspect-square border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-indigo-600 hover:bg-slate-50 transition-all text-slate-400 hover:text-indigo-600">
                     <Upload className="w-8 h-8 mb-2" />
-                    <span className="text-xs font-bold uppercase tracking-wider">Add Photo</span>
-                    <input type="file" multiple accept="image/*" onChange={handleImageChange} className="hidden" />
+                    <span className="text-xs font-bold uppercase tracking-wider">Add Media</span>
+                    <input type="file" multiple accept="image/*,video/*" onChange={handleImageChange} className="hidden" />
                   </label>
                 )}
               </div>
-              <p className="text-sm text-slate-500 italic">You can upload up to 8 high-quality photos of your item.</p>
+              <p className="text-sm text-slate-500 italic">You can upload up to 8 photos or videos of your item.</p>
+
+              <AnimatePresence>
+                {editingIndex !== null && (
+                  <ImageEditor 
+                    imageSrc={previews[editingIndex]} 
+                    onConfirm={handleCropConfirm}
+                    onCancel={() => setEditingIndex(null)}
+                  />
+                )}
+              </AnimatePresence>
             </motion.div>
           )}
         </AnimatePresence>
