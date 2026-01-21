@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 
 import AvatarUpload from '@/components/AvatarUpload';
+import OffersList from '@/components/OffersList';
 
 export default function ProfilePage() {
   const supabase = createClient();
@@ -161,10 +162,27 @@ export default function ProfilePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm"
+              className="bg-white rounded-[40px] p-10 border border-slate-100 shadow-sm text-left"
             >
               <div className="flex items-center justify-between mb-8">
-                <h2 className="text-xl font-bold text-slate-900 text-left">Recent Activity</h2>
+                <h2 className="text-2xl font-black text-slate-900 flex items-center">
+                  Recent Offers
+                </h2>
+                <Link href="/profile/offers" className="text-xs font-black text-indigo-600 uppercase tracking-widest hover:translate-x-1 transition-transform inline-flex items-center">
+                  View All Offers
+                </Link>
+              </div>
+              <OffersList />
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-white rounded-[40px] p-8 border border-slate-100 shadow-sm"
+            >
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-xl font-black text-slate-900 text-left">Recent Activity</h2>
                 <Link href="/profile/activity" className="text-sm font-bold text-indigo-600 hover:text-indigo-700">View All</Link>
               </div>
               

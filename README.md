@@ -22,6 +22,33 @@ A premium, custom-built marketplace platform designed specifically for students 
 - **Premium UX**: Integrated `sonner` notifications, skeleton loading states, and real-time account statistics.
 - **Modern Tech**: Optimized with Tailwind v4 syntax and strictly enforced TypeScript/Linting standards.
 
+## 🎯 Phase 3 Features (Planned)
+
+### **Tier 1 - Essential Marketplace Features**
+
+- **💳 Payment Integration**: Secure escrow payments via Stripe with buyer protection and seller payouts.
+  - _Tools_: Stripe API, Supabase Edge Functions for webhooks
+- **💬 Offers & Negotiation**: Make/receive price offers with counter-offer system and expiration timers.
+  - _Tools_: Supabase Database + Realtime (no external APIs)
+- **🔔 Enhanced Notifications**: Email notifications for messages, offers, and important events with customizable preferences.
+  - _Tools_: Resend (3,000 emails/month free) or SendGrid
+
+### **Tier 2 - Trust & Discovery**
+
+- **✅ Verification & Trust**: Student email verification (.edu domains), verified seller badges, and report/flag system.
+  - _Tools_: Supabase Auth email verification, Supabase Storage for ID uploads
+- **👥 Social Features**: Follow/unfollow sellers, wishlist/favorites system, and share listings to social media.
+  - _Tools_: Supabase Realtime, Open Graph meta tags (no external APIs)
+- **🔍 Advanced Search**: Full-text search with autocomplete, saved searches, alerts, and "similar items" recommendations.
+  - _Tools_: Supabase Full-Text Search or Algolia (optional)
+
+### **Tier 3 - Premium Enhancements**
+
+- **📊 Analytics & Insights**: Seller dashboard with views, favorites, conversion metrics, and price suggestions.
+  - _Tools_: Supabase Analytics, Vercel Analytics, custom SQL queries
+- **📸 Advanced Media**: Video uploads, image editing/cropping, and bulk upload capabilities.
+  - _Tools_: Supabase Storage + client-side compression, react-image-crop
+
 ## 🚀 Tech Stack
 
 - **Frontend/Backend**: [Next.js (App Router)](https://nextjs.org/)

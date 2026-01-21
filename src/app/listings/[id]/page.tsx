@@ -16,6 +16,8 @@ import Link from "next/link";
 import { Metadata } from "next";
 import ContactSellerButton from "@/components/ContactSellerButton";
 import ReviewSection from "@/components/ReviewSection";
+import ListingActionButtons from "@/components/ListingActionButtons";
+import * as motion from "framer-motion/client";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -28,8 +30,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   };
 }
 
-export default async function ListingDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ListingDetailPage({ params, searchParams }: { params: Promise<{ id: string }>, searchParams: Promise<{ payment?: string }> }) {
   const { id } = await params;
+  const { payment } = await searchParams;
   const supabase = await createClient();
 
   // Fetch listing with owner details
@@ -60,6 +63,22 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
   return (
     <div className="min-h-screen bg-slate-50 pt-32 pb-20 px-6">
       <div className="container mx-auto max-w-7xl">
+        {payment === 'success' && (
+          <div className="mb-8 p-6 bg-emerald-50 border border-emerald-100 rounded-[32px] flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-black text-emerald-900">Purchase Successful!</h3>
+                <p className="text-emerald-700/70 text-sm font-medium">Your payment has been processed and the seller has been notified.</p>
+              </div>
+            </div>
+            <Link href="/profile" className="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-sm hover:bg-emerald-700 transition-all">
+              View Order
+            </Link>
+          </div>
+        )}
         <Link 
           href="/browse" 
           className="inline-flex items-center space-x-2 text-slate-500 font-bold hover:text-indigo-600 transition-colors mb-8 group"
@@ -161,6 +180,7 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
               </div>
 
               <div className="space-y-4">
+                <ListingActionButtons listing={listing} />
                 <ContactSellerButton listingId={listing.id} sellerId={listing.owner_id} />
                 <div className="grid grid-cols-2 gap-4">
                   <button className="py-4 border-2 border-slate-100 text-slate-600 rounded-[20px] font-bold hover:bg-slate-50 transition-all flex items-center justify-center space-x-2">
