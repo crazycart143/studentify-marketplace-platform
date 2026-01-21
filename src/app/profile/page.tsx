@@ -12,13 +12,15 @@ import {
   LogOut, 
   Camera,
   LayoutDashboard,
-  GraduationCap
+  GraduationCap,
+  Briefcase
 } from 'lucide-react';
 
 import AvatarUpload from '@/components/AvatarUpload';
 import OffersList from '@/components/OffersList';
 import FavoritesList from '@/components/FavoritesList';
 import SellerAnalytics from '@/components/SellerAnalytics';
+import SkillsSection from '@/components/SkillsSection';
 
 export default function ProfilePage() {
   const supabase = createClient();
@@ -127,6 +129,7 @@ export default function ProfilePage() {
                 {[
                   { icon: LayoutDashboard, label: 'Dashboard', href: '/profile' },
                   { icon: Package, label: 'My Listings', href: '/profile/listings' },
+                  { icon: Briefcase, label: 'My Projects', href: '/profile/projects' },
                   { icon: MessageSquare, label: 'Messages', href: '/messages' },
                   { icon: Settings, label: 'Settings', href: '/profile/settings' },
                 ].map((item) => (
@@ -226,6 +229,18 @@ export default function ProfilePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
+              className="bg-white rounded-[40px] p-10 border border-slate-100 shadow-sm text-left"
+            >
+              <h2 className="text-2xl font-black text-slate-900 mb-8 flex items-center">
+                Skills & Endorsements
+              </h2>
+              <SkillsSection profileId={profile?.id} isOwnProfile={true} />
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25 }}
               className="bg-white rounded-[40px] p-8 border border-slate-100 shadow-sm"
             >
               <div className="flex items-center justify-between mb-8">
