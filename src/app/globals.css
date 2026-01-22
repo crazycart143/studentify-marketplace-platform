@@ -70,6 +70,12 @@ img:active {
   -moz-box-shadow: none;
 }
 
+/* --- Upwork Style Typography --- */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+
 /* Remove blue overlay and text selection for a more "App" feel */
 * { 
   -webkit-tap-highlight-color: rgba(0,0,0,0);  
@@ -81,6 +87,14 @@ img:active {
   user-select: none; 
 }
 
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
 /* Re-enable selection for inputs and text areas so users can still type/edit */
 input, textarea {
   -webkit-user-select: text;
@@ -88,4 +102,5 @@ input, textarea {
   -moz-user-select: text;
   -ms-user-select: text;
   user-select: text;
+  letter-spacing: normal;
 }

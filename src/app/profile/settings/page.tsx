@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase";
 import { motion } from "framer-motion";
-import { User, Shield, Bell, Lock, Save, Loader2 } from "lucide-react";
+import { User, ShieldCheck as Shield, Bell, Lock, FloppyDisk as Save, Spinner as Loader2 } from "@phosphor-icons/react";
 import { toast } from "sonner";
+import { UniversitySearch } from "@/components/UniversitySearch";
 
 export default function SettingsPage() {
   const supabase = createClient();
@@ -90,7 +91,7 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-slate-50 pt-32 pb-20 px-6 text-left">
       <div className="container mx-auto max-w-4xl">
         <div className="mb-12">
-          <h1 className="text-3xl font-black text-black tracking-tight">Settings</h1>
+          <h1 className="text-3xl font-bold text-black tracking-tight">Settings</h1>
           <p className="text-slate-500 font-medium">Manage your account preferences and profile details.</p>
         </div>
 
@@ -105,7 +106,7 @@ export default function SettingsPage() {
             ].map((item) => (
               <button
                 key={item.label}
-                className={`w-full flex items-center space-x-3 px-6 py-4 rounded-[20px] font-bold text-sm transition-all ${
+                className={`w-full flex items-center space-x-3 px-6 py-4 rounded-[20px] font-semibold text-sm transition-all ${
                   item.active 
                     ? "bg-white text-brand shadow-sm border border-slate-100" 
                     : "text-slate-500 hover:bg-slate-100/50"
@@ -127,34 +128,34 @@ export default function SettingsPage() {
               <form onSubmit={handleSave} className="space-y-8">
                 <div className="grid grid-cols-1 gap-8">
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] ml-1">Full Name</label>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[2px] ml-1">Full Name</label>
                     <input 
                       type="text"
                       value={profile.full_name}
                       onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
-                      className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-brand text-black font-bold"
+                      className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-brand text-black font-semibold"
                       placeholder="e.g. John Doe"
                     />
                   </div>
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] ml-1">Username</label>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[2px] ml-1">Username</label>
                     <div className="relative">
-                      <span className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 font-bold">@</span>
+                      <span className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 font-semibold">@</span>
                       <input 
                         type="text"
                         value={profile.username}
                         onChange={(e) => setProfile({ ...profile, username: e.target.value })}
-                        className="w-full pl-12 pr-6 py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-brand text-black font-bold"
+                        className="w-full pl-12 pr-6 py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-brand text-black font-semibold"
                         placeholder="username"
                       />
                     </div>
                   </div>
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] ml-1">Account Type</label>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[2px] ml-1">Account Type</label>
                     <select
                       value={profile.role}
                       onChange={(e) => setProfile({ ...profile, role: e.target.value })}
-                      className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-brand text-black font-bold appearance-none cursor-pointer"
+                      className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-brand text-black font-semibold appearance-none cursor-pointer"
                     >
                       <option value="buyer">Buyer</option>
                       <option value="seller">Seller</option>
@@ -163,33 +164,31 @@ export default function SettingsPage() {
 
                   <div className="pt-4 grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-3">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] ml-1">University</label>
-                      <input 
-                        type="text"
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[2px] ml-1">University</label>
+                      <UniversitySearch 
                         value={profile.university}
-                        onChange={(e) => setProfile({ ...profile, university: e.target.value })}
-                        className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-brand text-black font-bold"
+                        onChange={(val) => setProfile({ ...profile, university: val })}
                         placeholder="e.g. Stanford University"
                       />
                     </div>
                     <div className="space-y-3">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] ml-1">Major / Course</label>
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[2px] ml-1">Major / Course</label>
                       <input 
                         type="text"
                         value={profile.major}
                         onChange={(e) => setProfile({ ...profile, major: e.target.value })}
-                        className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-brand text-black font-bold"
+                        className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-brand text-black font-semibold"
                         placeholder="e.g. Computer Science"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] ml-1">Year of Study</label>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[2px] ml-1">Year of Study</label>
                     <select
                       value={profile.year_of_study}
                       onChange={(e) => setProfile({ ...profile, year_of_study: e.target.value })}
-                      className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-brand text-black font-bold appearance-none cursor-pointer"
+                      className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-brand text-black font-semibold appearance-none cursor-pointer"
                     >
                       <option value="">Select Year</option>
                       <option value="1st Year">1st Year</option>
@@ -202,21 +201,21 @@ export default function SettingsPage() {
                   </div>
 
                   <div className="space-y-3">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] ml-1">Professional Bio</label>
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[2px] ml-1">Professional Bio</label>
                     <textarea 
                       value={profile.bio}
                       onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-                      className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-brand text-black font-bold min-h-[120px] resize-none"
+                      className="w-full px-6 py-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-brand text-black font-semibold min-h-[120px] resize-none"
                       placeholder="Tell us about your skills and experience..."
                     />
                   </div>
                 </div>
 
                 <div className="pt-8 border-t border-slate-50">
-                  <button
+                   <button
                     type="submit"
                     disabled={saving}
-                    className="flex items-center space-x-2 px-10 py-4 bg-black text-white rounded-2xl font-black hover:bg-brand transition-all shadow-xl shadow-slate-100 disabled:opacity-50"
+                    className="flex items-center space-x-2 px-10 py-4 bg-black text-white rounded-2xl font-bold hover:bg-brand transition-all shadow-xl shadow-slate-100 disabled:opacity-50"
                   >
                     {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
                     <span>{saving ? 'Saving...' : 'Save Changes'}</span>

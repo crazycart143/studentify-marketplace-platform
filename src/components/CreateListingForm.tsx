@@ -5,18 +5,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Package, 
   Tag, 
-  DollarSign, 
+  CurrencyDollar as DollarSign, 
   Image as ImageIcon, 
-  ChevronRight, 
-  ChevronLeft, 
+  CaretRight as ChevronRight, 
+  CaretLeft as ChevronLeft, 
   Check,
-  Upload,
+  UploadSimple as Upload,
   X,
-  Loader2,
-  Video,
-  BoxSelect,
-  AlertTriangle
-} from "lucide-react";
+  Spinner as Loader2,
+  VideoCamera as Video,
+  Crop as BoxSelect,
+  Warning as AlertTriangle
+} from "@phosphor-icons/react";
 import { useAuth } from "@/components/AuthProvider";
 import { createClient } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
@@ -477,12 +477,12 @@ export default function CreateListingForm() {
                 {previews.length < 8 && (
                   <label className="aspect-square border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-brand hover:bg-slate-50 transition-all text-slate-400 hover:text-brand">
                     <Upload className="w-8 h-8 mb-2" />
-                    <span className="text-xs font-semibold uppercase tracking-wider">Add Media</span>
+                    <span className="text-xs font-semibold uppercase tracking-wider">Add Photo/Video</span>
                     <input type="file" multiple accept="image/*,video/*" onChange={handleImageChange} className="hidden" />
                   </label>
                 )}
               </div>
-              <p className="text-sm text-slate-500 italic">You can upload up to 8 photos or videos of your item.</p>
+              <p className="text-sm text-slate-500 italic">Showcase your item or describe your service visually (e.g. portfolio screenshots).</p>
 
               <AnimatePresence>
                 {editingIndex !== null && (

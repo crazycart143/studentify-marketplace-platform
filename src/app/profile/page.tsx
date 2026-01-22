@@ -4,17 +4,18 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { 
-  Settings, 
+  Gear as Settings, 
   Package, 
-  MessageSquare, 
-  LogOut, 
-  LayoutDashboard,
-  GraduationCap,
+  ChatCircleDots as MessageSquare, 
+  SignOut as LogOut, 
+  SquaresFour as LayoutDashboard,
+  Student as GraduationCap,
   Briefcase,
   FileText,
   Users,
-  Loader2
-} from 'lucide-react';
+  Spinner as Loader2,
+  Clock
+} from '@phosphor-icons/react';
 
 import { useAuth } from '@/components/AuthProvider';
 import { createClient } from '@/lib/supabase';
@@ -71,7 +72,7 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-slate-50 pt-32 pb-20 px-6 font-sans">
-      <div className="container mx-auto max-w-6xl">
+      <div className="container mx-auto max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           
           {/* Sidebar */}
@@ -86,35 +87,50 @@ export default function ProfilePage() {
                   url={profile?.avatar_url || user?.user_metadata?.avatar_url} 
                   onUploadAction={refreshProfile} 
                 />
-                <div className="mt-6">
-                  <div className="flex items-center justify-center space-x-2">
-                    <h2 className="text-xl font-semibold text-black leading-tight">
-                      {profile?.full_name || user?.user_metadata?.full_name || user?.user_metadata?.name || 'New User'}
-                    </h2>
-                    <VerificationBadge isVerified={profile?.is_verified} showText={false} />
+                <div className="mt-6 w-full px-2">
+                  <div className="flex flex-col items-center justify-center">
+                    <div className="flex items-center justify-center space-x-2 max-w-full">
+                      <h2 className="text-xl font-semibold text-black leading-tight truncate w-full text-center" title={profile?.full_name || 'User'}>
+                        {profile?.full_name || user?.user_metadata?.full_name || user?.user_metadata?.name || 'New User'}
+                      </h2>
+                      <div className="shrink-0">
+                        <VerificationBadge isVerified={profile?.is_verified} showText={false} />
+                      </div>
+                    </div>
+                    <p className="text-sm text-slate-500 font-medium mt-1 truncate w-full text-center">
+                      @{profile?.username || user?.user_metadata?.user_name || 'user'}
+                    </p>
                   </div>
-                  <p className="text-sm text-slate-500 font-medium mt-1">
-                    @{profile?.username || user?.user_metadata?.user_name || 'user'}
-                  </p>
                 </div>
                 
                 {profile?.university && (
-                  <div className="mt-6 flex flex-col items-center gap-1.5">
-                    <div className="flex items-center gap-1.5 text-brand font-semibold text-[11px] uppercase tracking-wider">
-                      <GraduationCap className="w-4 h-4" />
+                  <div className="mt-6 flex flex-col items-center gap-2 text-center w-full">
+                    <div className="text-brand font-semibold text-[11px] uppercase tracking-wider leading-snug px-4">
                       <span>{profile.university}</span>
                     </div>
                     {profile.major && (
-                      <div className="text-slate-500 text-[10px] font-medium">
+                      <div className="text-slate-500 text-[10px] font-medium px-4">
                         {profile.major} • {profile.year_of_study || 'Student'}
                       </div>
                     )}
                   </div>
                 )}
 
-                <div className="mt-6 px-4 py-1.5 bg-brand/10 text-brand text-[10px] font-semibold rounded-full uppercase tracking-wider inline-block">
-                  {profile?.role === 'seller' ? 'Verified Seller' : 'Student Member'}
+                <div className={`mt-6 px-4 py-1.5 text-[10px] font-semibold rounded-full uppercase tracking-wider inline-block ${profile?.is_verified ? 'bg-brand/10 text-brand' : 'bg-slate-100 text-slate-500'}`}>
+                  {profile?.is_verified ? 'Verified Seller' : 'Unverified Student'}
                 </div>
+
+                {!profile?.is_verified && profile?.verification_doc_url && (
+                  <div className="mt-4 w-full p-4 bg-amber-50 rounded-2xl border border-amber-100 flex items-start space-x-3 text-left">
+                     <div className="mt-0.5"><Clock className="w-4 h-4 text-amber-600 animate-pulse" /></div>
+                     <div>
+                       <p className="text-xs font-bold text-amber-800">Verification Pending</p>
+                       <p className="text-[10px] text-amber-700 font-medium mt-0.5 leading-relaxed">
+                         Our team is reviewing your documents. This typically takes 1-2 days.
+                       </p>
+                     </div>
+                  </div>
+                )}
               </div>
 
               <nav className="space-y-2">

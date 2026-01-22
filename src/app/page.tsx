@@ -1,11 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Zap, Shield, Globe, Star, Search, User } from "lucide-react";
+import { ArrowRight, Lightning, ShieldCheck, Globe, Star, MagnifyingGlass, User } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase";
+
+import { BrandLogo } from "@/components/BrandLogo";
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -41,9 +43,9 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center space-x-2 bg-brand/10 text-brand px-4 py-2 rounded-full text-sm font-bold mb-8 border border-brand/20 shadow-sm"
+              className="inline-flex items-center space-x-2 bg-brand/10 text-brand pl-3 pr-5 py-2 rounded-full text-xs font-bold mb-8 border border-brand/20 shadow-sm"
             >
-              <Star className="w-4 h-4 fill-brand" />
+              <BrandLogo iconOnly size="sm" className="scale-75" />
               <span>OFFICIAL STUDENT SITE</span>
             </motion.div>
 
@@ -101,7 +103,7 @@ export default function Home() {
               className="max-w-2xl mx-auto"
             >
               <div className="relative group">
-                <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-400 group-focus-within:text-brand transition-colors" />
+                <MagnifyingGlass className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-400 group-focus-within:text-brand transition-colors" />
                 <input
                   type="text"
                   value={query}
@@ -155,14 +157,14 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                icon: Shield,
+                icon: ShieldCheck,
                 title: "Campus Verified",
                 description:
                   "Trade only with verified students from your university. Safety first, always.",
                 color: "brand",
               },
               {
-                icon: Zap,
+                icon: Lightning,
                 title: "Lightning Fast",
                 description:
                   "List items in seconds. Chat instantly. Meet on campus. No shipping delays.",

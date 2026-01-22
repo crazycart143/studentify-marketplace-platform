@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "sonner";
 import { ShoppingBag } from "lucide-react";
 
-const inter = Inter({ 
+const instrument = Instrument_Sans({ 
   subsets: ["latin"],
-  variable: '--font-inter',
+  variable: '--font-instrument',
 });
 
 export const metadata: Metadata = {
@@ -16,6 +16,7 @@ export const metadata: Metadata = {
 };
 
 import { AuthProvider } from "@/components/AuthProvider";
+import VerificationWidget from "@/components/VerificationWidget";
 
 export default function RootLayout({
   children,
@@ -24,10 +25,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} antialiased selection:bg-brand/20 selection:text-brand-dark`}>
+      <body className={`${instrument.className} antialiased tracking-tight selection:bg-brand/20 selection:text-brand-dark`}>
         <Toaster position="top-center" richColors />
         <AuthProvider>
           <Navbar />
+          <VerificationWidget />
           <main>{children}</main>
         </AuthProvider>
         <footer className="bg-slate-50 border-t border-slate-200 py-12">
