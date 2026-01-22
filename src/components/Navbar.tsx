@@ -1,83 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { 
   ShoppingBag, 
   Search, 
   MessageSquare, 
-  User, 
+  User as UserIcon, 
   Menu, 
   X,
-  PlusCircle,
-  LayoutDashboard,
-  LogOut,
-  MapPin
+  LogOut
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { createClient } from "@/lib/supabase";
+import { useAuth } from "@/components/AuthProvider";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const [profile, setProfile] = useState<any>(null);
+  const { user, profile, loading, signOut } = useAuth();
   const pathname = usePathname();
-  const supabase = createClient();
 
-  useEffect(() => {
-    const handleScroll = () => {
+  // Handle scroll effect
+  if (typeof window !== "undefined") {
+    window.onscroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-
-    const fetchProfile = async (userId: string) => {
-      const { data } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-      setProfile(data);
-    };
-
-    const initAuth = async () => {
-      console.log('[Navbar] Initializing auth...');
-      // Use getUser() instead of getSession() - it properly reads cookies
-      const { data: { user }, error } = await supabase.auth.getUser();
-      
-      console.log('[Navbar] User from getUser():', user?.email || 'None', 'Error:', error?.message || 'None');
-      
-      if (user && !error) {
-        setUser(user);
-        await fetchProfile(user.id);
-      }
-    };
-
-    // Initialize auth immediately
-    initAuth();
-
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        await fetchProfile(session.user.id);
-      } else {
-        setProfile(null);
-      }
-    });
-
-    window.addEventListener("scroll", handleScroll);
-    
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    window.location.href = '/';
-  };
+  }
 
   const navLinks = [
     { name: "Browse", href: "/browse" },
@@ -87,9 +36,9 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? "bg-white/80 backdrop-blur-md border-b border-slate-200 py-3 mt-4 mx-4 rounded-2xl shadow-lg border border-white/20"
+          ? "bg-white/95 backdrop-blur-xl py-3 mt-4 mx-4 rounded-2xl shadow-2xl shadow-black/5"
           : "bg-transparent py-6"
       }`}
     >
@@ -99,7 +48,7 @@ const Navbar = () => {
           <div className="w-10 h-10 bg-brand rounded-xl flex items-center justify-center shadow-lg shadow-brand/20 group-hover:scale-110 transition-transform">
             <ShoppingBag className="text-white w-6 h-6" />
           </div>
-          <span className={`text-2xl font-black tracking-tight ${isScrolled ? "text-black" : "text-black"}`}>
+          <span className={`text-2xl font-semibold tracking-tight ${isScrolled ? "text-black" : "text-black"}`}>
             Studentify
           </span>
         </Link>
@@ -110,7 +59,7 @@ const Navbar = () => {
             <Link
               key={link.name}
               href={link.href}
-              className={`text-sm font-semibold hover:text-brand transition-colors ${
+              className={`text-sm font-medium hover:text-brand transition-colors ${
                 pathname === link.href ? "text-brand" : "text-slate-600"
               }`}
             >
@@ -125,7 +74,9 @@ const Navbar = () => {
             <Search className="w-5 h-5" />
           </button>
           
-          {user ? (
+          {loading ? (
+             <div className="w-10 h-10 rounded-full bg-slate-100 animate-pulse" />
+          ) : user ? (
             <>
               <Link href="/messages" className="p-2 text-slate-600 hover:text-brand transition-colors relative">
                 <MessageSquare className="w-5 h-5" />
@@ -137,27 +88,27 @@ const Navbar = () => {
                 className="flex items-center space-x-3 pl-2 group"
               >
                 <div className="text-right">
-                  <p className="text-sm font-bold text-black group-hover:text-brand transition-colors">
-                    {profile?.full_name || "Student User"}
+                  <p className="text-sm font-semibold text-black group-hover:text-brand transition-colors">
+                    {profile?.full_name || user?.user_metadata?.full_name || user?.user_metadata?.name || "Student User"}
                   </p>
-                  <p className="text-xs text-slate-500">Dashboard</p>
+                  <p className="text-xs text-slate-500 font-medium">Dashboard</p>
                 </div>
                 <div className="w-10 h-10 rounded-full border-2 border-brand/20 p-0.5 group-hover:border-brand transition-all">
-                  {profile?.avatar_url ? (
+                  {(profile?.avatar_url || user?.user_metadata?.avatar_url) ? (
                     <img
-                      src={profile.avatar_url}
+                      src={profile?.avatar_url || user?.user_metadata?.avatar_url}
                       alt="Avatar"
                       className="w-full h-full rounded-full object-cover"
                     />
                   ) : (
                     <div className="w-full h-full rounded-full bg-slate-100 flex items-center justify-center">
-                      <User className="w-5 h-5 text-slate-400" />
+                      <UserIcon className="w-5 h-5 text-slate-400" />
                     </div>
                   )}
                 </div>
               </Link>
               <button 
-                onClick={handleSignOut}
+                onClick={signOut}
                 className="p-2 text-slate-400 hover:text-red-500 transition-colors"
                 title="Sign Out"
               >
@@ -169,9 +120,9 @@ const Navbar = () => {
               <div className="h-6 w-px bg-slate-200 mx-2" />
               <Link
                 href="/auth"
-                className="flex items-center space-x-2 bg-brand/10 text-brand px-5 py-2.5 rounded-xl font-bold hover:bg-brand hover:text-white transition-all shadow-sm"
+                className="flex items-center space-x-2 bg-brand/10 text-brand px-5 py-2.5 rounded-xl font-semibold hover:bg-brand hover:text-white transition-all shadow-sm"
               >
-                <User className="w-4 h-4" />
+                <UserIcon className="w-4 h-4" />
                 <span>Sign In</span>
               </Link>
             </>
@@ -201,7 +152,7 @@ const Navbar = () => {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className="text-lg font-bold text-slate-600 hover:text-brand px-4 py-2"
+                  className="text-lg font-semibold text-slate-600 hover:text-brand px-4 py-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {link.name}
@@ -216,15 +167,15 @@ const Navbar = () => {
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     <div className="w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center">
-                      <User className="w-5 h-5 text-brand" />
+                      <UserIcon className="w-5 h-5 text-brand" />
                     </div>
                     <div>
-                      <p className="font-bold text-black">{profile?.full_name || "Dashboard"}</p>
-                      <p className="text-sm text-slate-500">View Profile</p>
+                      <p className="font-semibold text-black">{profile?.full_name || user?.user_metadata?.full_name || "Dashboard"}</p>
+                      <p className="text-sm text-slate-500 font-medium">View Profile</p>
                     </div>
                   </Link>
                   <button
-                    onClick={handleSignOut}
+                    onClick={signOut}
                     className="flex items-center space-x-2 text-red-500 font-bold px-4 py-2"
                   >
                     <LogOut className="w-5 h-5" />
@@ -237,7 +188,7 @@ const Navbar = () => {
                   className="bg-brand text-white px-6 py-4 rounded-2xl font-bold flex items-center justify-center space-x-2 shadow-lg shadow-brand/20"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <User className="w-5 h-5" />
+                  <UserIcon className="w-5 h-5" />
                   <span>Sign In</span>
                 </Link>
               )}

@@ -16,51 +16,63 @@ export default function SellerAnalytics() {
   const supabase = createClient();
 
   useEffect(() => {
+    let isMounted = true;
+
     async function fetchAnalytics() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user || !isMounted) return;
 
-      // Fetch views grouped by day for the last 7 days
-      const { data: viewsData, error: viewsError } = await supabase
-        .from('listing_views')
-        .select(`
-          created_at,
-          listing:listing_id (title, owner_id)
-        `)
-        .eq('listing.owner_id', user.id);
+        // Fetch views grouped by day for the last 7 days
+        const { data: viewsData, error: viewsError } = await supabase
+          .from('listing_views')
+          .select(`
+            created_at,
+            listing:listing_id (title, owner_id)
+          `)
+          .eq('listing.owner_id', user.id);
 
-      if (viewsData) {
-        // Simple grouping logic for the chart
-        const last7Days = Array.from({ length: 7 }, (_, i) => {
-          const d = new Date();
-          d.setDate(d.getDate() - i);
-          return d.toISOString().split('T')[0];
-        }).reverse();
+        if (viewsData && isMounted) {
+          // Simple grouping logic for the chart
+          const last7Days = Array.from({ length: 7 }, (_, i) => {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            return d.toISOString().split('T')[0];
+          }).reverse();
 
-        const grouped = last7Days.map(date => ({
-          date: new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-          views: viewsData.filter(v => v.created_at.startsWith(date)).length
-        }));
+          const grouped = last7Days.map(date => ({
+            date: new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            views: viewsData.filter(v => v.created_at.startsWith(date)).length
+          }));
 
-        setData(grouped);
-        setStats(prev => ({ ...prev, totalViews: viewsData.length }));
+          setData(grouped);
+          setStats(prev => ({ ...prev, totalViews: viewsData.length }));
+        }
+
+        // Fetch total favorites for seller's listings
+        const { data: favsData } = await supabase
+          .from('favorites')
+          .select(`
+            listing:listing_id (owner_id)
+          `)
+          .eq('listing.owner_id', user.id);
+        
+        if (favsData && isMounted) {
+          setStats(prev => ({ ...prev, totalFavorites: favsData.length }));
+        }
+      } catch (err: any) {
+        if (err.name !== 'AbortError') {
+          console.error("Analytics load error:", err);
+        }
+      } finally {
+        if (isMounted) setLoading(false);
       }
-
-      // Fetch total favorites for seller's listings
-      const { data: favsData } = await supabase
-        .from('favorites')
-        .select(`
-          listing:listing_id (owner_id)
-        `)
-        .eq('listing.owner_id', user.id);
-      
-      if (favsData) {
-        setStats(prev => ({ ...prev, totalFavorites: favsData.length }));
-      }
-
-      setLoading(false);
     }
     fetchAnalytics();
+
+    return () => {
+      isMounted = false;
+    };
   }, [supabase]);
 
   if (loading) {

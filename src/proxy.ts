@@ -1,7 +1,7 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -31,8 +31,8 @@ export async function middleware(request: NextRequest) {
             name,
             value,
             ...options,
-            httpOnly: false, // Allow client-side JS to read cookies
-            secure: false,   // Required for localhost
+            httpOnly: false, // Important for client-side state sync
+            secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
           })
         },
@@ -57,8 +57,25 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // IMPORTANT: DO NOT REMOVE THIS. It refreshes the session if expired.
-  await supabase.auth.getUser()
+  // This refreshes the session if expired - keep this!
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // Protection logic: if accessing protected routes without user
+  const protectedRoutes = ['/profile', '/sell', '/messages'];
+  const isProtectedRoute = protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route));
+  
+  if (isProtectedRoute && !user) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = '/auth';
+    // Store the intended destination to redirect back after login
+    redirectUrl.searchParams.set('next', request.nextUrl.pathname);
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // Redirect authenticated users away from auth page
+  if (request.nextUrl.pathname === '/auth' && user) {
+    return NextResponse.redirect(new URL('/profile', request.url));
+  }
 
   return response
 }
@@ -70,8 +87,10 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
+     * - auth/forgot-password (the request page)
+     * - profile/reset-password (the target page)
+     * - api/auth (NextAuth routes if any left)
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|auth/forgot-password|profile/reset-password|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }

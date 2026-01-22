@@ -17,6 +17,7 @@ import {
   BoxSelect,
   AlertTriangle
 } from "lucide-react";
+import { useAuth } from "@/components/AuthProvider";
 import { createClient } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -53,12 +54,12 @@ export default function CreateListingForm() {
   const [previews, setPreviews] = useState<string[]>([]);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   
+  const { user } = useAuth();
   const supabase = createClient();
   const router = useRouter();
 
   useEffect(() => {
     async function getUniversity() {
-      const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data } = await supabase
           .from('profiles')
@@ -70,7 +71,7 @@ export default function CreateListingForm() {
       }
     }
     getUniversity();
-  }, [supabase]);
+  }, [user, supabase]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -127,8 +128,11 @@ export default function CreateListingForm() {
     const toastId = toast.loading("Publishing your listing...");
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("No authenticated user found.");
+      if (!user) {
+        toast.error("You must be logged in to create a listing", { id: toastId });
+        setLoading(false);
+        return;
+      }
 
       // 1. Upload Images
       const imageUrls = [];
@@ -228,14 +232,14 @@ export default function CreateListingForm() {
               <div className="flex p-1 bg-slate-100 rounded-2xl mb-8">
                 <button
                   onClick={() => setFormData(prev => ({ ...prev, type: 'product' }))}
-                  className={`flex-1 flex items-center justify-center space-x-2 py-3 rounded-xl font-bold transition-all ${formData.type === 'product' ? 'bg-white text-brand shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                  className={`flex-1 flex items-center justify-center space-x-2 py-3 rounded-xl font-semibold transition-all ${formData.type === 'product' ? 'bg-white text-brand shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                   <Package className="w-4 h-4" />
                   <span>Physical Product</span>
                 </button>
                 <button
                   onClick={() => setFormData(prev => ({ ...prev, type: 'service' }))}
-                  className={`flex-1 flex items-center justify-center space-x-2 py-3 rounded-xl font-bold transition-all ${formData.type === 'service' ? 'bg-white text-brand shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                  className={`flex-1 flex items-center justify-center space-x-2 py-3 rounded-xl font-semibold transition-all ${formData.type === 'service' ? 'bg-white text-brand shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                   <Tag className="w-4 h-4" />
                   <span>Student Service</span>
@@ -243,7 +247,7 @@ export default function CreateListingForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">
+                <label className="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wider">
                   {formData.type === 'product' ? 'Listing Title' : 'Service Title'}
                 </label>
                 <input
@@ -258,7 +262,7 @@ export default function CreateListingForm() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">Category</label>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wider">Category</label>
                   <select
                     name="category"
                     value={formData.category}
@@ -271,7 +275,7 @@ export default function CreateListingForm() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">
+                  <label className="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wider">
                     {formData.type === 'product' ? 'Price ($)' : `Service Fee (${formData.pricing_model === 'fixed' ? '$' : '$/hr'})`}
                   </label>
                   <div className="relative">
@@ -320,7 +324,7 @@ export default function CreateListingForm() {
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">Pricing Model</label>
+                      <label className="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wider">Pricing Model</label>
                       <select
                         name="pricing_model"
                         value={formData.pricing_model}
@@ -332,7 +336,7 @@ export default function CreateListingForm() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">Est. Delivery Time</label>
+                      <label className="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wider">Est. Delivery Time</label>
                       <input
                         type="text"
                         name="delivery_time"
@@ -344,7 +348,7 @@ export default function CreateListingForm() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">Number of Revisions</label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wider">Number of Revisions</label>
                     <input
                       type="number"
                       name="revisions_count"
@@ -359,7 +363,7 @@ export default function CreateListingForm() {
                       <div className="flex items-start space-x-3">
                         <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                         <div className="text-left">
-                          <h4 className="text-sm font-black text-amber-900 uppercase tracking-wider">Academic Honor Code</h4>
+                          <h4 className="text-sm font-bold text-amber-900 uppercase tracking-wider">Academic Honor Code</h4>
                           <p className="text-xs text-amber-700 font-medium leading-relaxed mt-1">
                             By listing this service, you agree to uphold university academic integrity standards. 
                             You will provide educational support and guidance, but will NOT perform homework, 
@@ -380,7 +384,7 @@ export default function CreateListingForm() {
                             <Check className="w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" />
                           </div>
                         </div>
-                        <span className="text-xs font-bold text-amber-900 group-hover:text-amber-700 transition-colors pt-0.5">
+                        <span className="text-xs font-semibold text-amber-900 group-hover:text-amber-700 transition-colors pt-0.5">
                           I agree to the Studentify Academic Honor Code
                         </span>
                       </label>
@@ -405,7 +409,7 @@ export default function CreateListingForm() {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">Item Description</label>
+                <label className="block text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wider">Item Description</label>
                 <textarea
                   name="description"
                   rows={6}
@@ -473,7 +477,7 @@ export default function CreateListingForm() {
                 {previews.length < 8 && (
                   <label className="aspect-square border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-brand hover:bg-slate-50 transition-all text-slate-400 hover:text-brand">
                     <Upload className="w-8 h-8 mb-2" />
-                    <span className="text-xs font-bold uppercase tracking-wider">Add Media</span>
+                    <span className="text-xs font-semibold uppercase tracking-wider">Add Media</span>
                     <input type="file" multiple accept="image/*,video/*" onChange={handleImageChange} className="hidden" />
                   </label>
                 )}
@@ -497,7 +501,7 @@ export default function CreateListingForm() {
           {step > 1 ? (
             <button
               onClick={prevStep}
-              className="px-6 py-4 flex items-center space-x-2 text-slate-600 font-bold hover:text-black transition-colors"
+              className="px-6 py-4 flex items-center space-x-2 text-slate-600 font-semibold hover:text-black transition-colors"
             >
               <ChevronLeft className="w-5 h-5" />
               <span>Back</span>

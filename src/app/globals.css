@@ -40,3 +40,52 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #cbd5e1;
 }
+
+/* --- UI Polish & Interaction Fixes --- */
+
+/* Remove outline and blue overlay on focus and active states */
+:focus,
+:active {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Remove focus ring for links and interactive elements */
+a:focus,
+button:focus,
+input:focus,
+textarea:focus,
+select:focus,
+iframe:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+img:focus,
+img:active {
+  outline: none;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+}
+
+/* Remove blue overlay and text selection for a more "App" feel */
+* { 
+  -webkit-tap-highlight-color: rgba(0,0,0,0);  
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; 
+}
+
+/* Re-enable selection for inputs and text areas so users can still type/edit */
+input, textarea {
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}

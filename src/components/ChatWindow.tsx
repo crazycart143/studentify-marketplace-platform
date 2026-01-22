@@ -30,15 +30,24 @@ export default function ChatWindow({ conversationId, currentUser, convoData }: C
   const listing = convoData.listing;
 
   useEffect(() => {
+    let isMounted = true;
+
     // 1. Initial fetch
     const fetchMessages = async () => {
-      const { data, error } = await supabase
-        .from('messages')
-        .select('*')
-        .eq('conversation_id', conversationId)
-        .order('created_at', { ascending: true });
+      try {
+        const { data, error } = await supabase
+          .from('messages')
+          .select('*')
+          .eq('conversation_id', conversationId)
+          .order('created_at', { ascending: true });
 
-      if (data) setMessages(data);
+        if (error) throw error;
+        if (data && isMounted) setMessages(data);
+      } catch (err: any) {
+        if (err.name !== 'AbortError') {
+          console.error("Fetch messages error:", err.message);
+        }
+      }
     };
 
     fetchMessages();
@@ -52,11 +61,14 @@ export default function ChatWindow({ conversationId, currentUser, convoData }: C
         table: 'messages',
         filter: `conversation_id=eq.${conversationId}`
       }, (payload) => {
-        setMessages((prev) => [...prev, payload.new as Message]);
+        if (isMounted) {
+          setMessages((prev) => [...prev, payload.new as Message]);
+        }
       })
       .subscribe();
 
     return () => {
+      isMounted = false;
       supabase.removeChannel(channel);
     };
   }, [conversationId, supabase]);

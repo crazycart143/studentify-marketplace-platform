@@ -5,12 +5,17 @@ import Navbar from "@/components/Navbar";
 import { Toaster } from "sonner";
 import { ShoppingBag } from "lucide-react";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ 
+  subsets: ["latin"],
+  variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
   title: "Studentify | Premium Marketplace for Students",
   description: "The ultimate marketplace platform for student deals and essentials.",
 };
+
+import { AuthProvider } from "@/components/AuthProvider";
 
 export default function RootLayout({
   children,
@@ -21,8 +26,10 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.className} antialiased selection:bg-brand/20 selection:text-brand-dark`}>
         <Toaster position="top-center" richColors />
-        <Navbar />
-        <main>{children}</main>
+        <AuthProvider>
+          <Navbar />
+          <main>{children}</main>
+        </AuthProvider>
         <footer className="bg-slate-50 border-t border-slate-200 py-12">
           <div className="container mx-auto px-6">
             <div className="flex flex-col md:flex-row justify-between items-center text-left">

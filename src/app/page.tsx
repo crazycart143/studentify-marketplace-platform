@@ -14,25 +14,8 @@ export default function Home() {
   const supabase = createClient();
 
   useEffect(() => {
-    // Handle OAuth callback code exchange on client-side
-    const code = searchParams?.get('code');
-    if (code) {
-      const exchangeCode = async () => {
-        console.log('[Home] Exchanging code for session...');
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
-        if (!error) {
-          console.log('[Home] Session exchange successful!');
-          // Remove code from URL
-          window.history.replaceState({}, '', '/');
-          // Small delay then reload to update navbar
-          setTimeout(() => window.location.reload(), 100);
-        } else {
-          console.error('[Home] Session exchange error:', error);
-        }
-      };
-      exchangeCode();
-    }
-  }, [searchParams]);
+    // Analytics or other initialization
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,7 +52,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-5xl md:text-7xl font-black tracking-tight mb-6 leading-tight"
+              className="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight"
             >
               The Next Gen
               <br />
@@ -96,14 +79,14 @@ export default function Home() {
             >
               <Link
                 href="/browse"
-                className="group bg-brand text-white px-8 py-4 rounded-2xl font-bold text-lg flex items-center space-x-2 shadow-xl shadow-brand/20 hover:shadow-2xl hover:shadow-brand/30 hover:scale-105 transition-all"
+                className="group bg-brand text-white px-8 py-4 rounded-2xl font-semibold text-lg flex items-center space-x-2 shadow-xl shadow-brand/20 hover:shadow-2xl hover:shadow-brand/30 hover:scale-105 transition-all"
               >
                 <span>EXPLORE MARKET</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href="/sell"
-                className="group bg-white text-black border-2 border-slate-200 px-8 py-4 rounded-2xl font-bold text-lg hover:border-brand hover:text-brand transition-all"
+                className="group bg-white text-black border-2 border-slate-200 px-8 py-4 rounded-2xl font-semibold text-lg hover:border-brand hover:text-brand transition-all"
               >
                 START SELLING
               </Link>
@@ -128,7 +111,7 @@ export default function Home() {
                 />
                 <button
                   type="submit"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-brand text-white px-6 py-3 rounded-xl font-bold hover:bg-brand-dark transition-colors"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-brand text-white px-6 py-3 rounded-xl font-semibold hover:bg-brand-dark transition-colors"
                 >
                   SEARCH
                 </button>
@@ -147,7 +130,7 @@ export default function Home() {
                 <Link
                   key={tag}
                   href={`/browse?q=${tag.toLowerCase()}`}
-                  className="px-4 py-2 bg-slate-50 hover:bg-brand/10 text-slate-700 hover:text-brand rounded-xl text-sm font-bold border border-slate-200 hover:border-brand/20 transition-all"
+                  className="px-4 py-2 bg-slate-50 hover:bg-brand/10 text-slate-700 hover:text-brand rounded-xl text-sm font-semibold border border-slate-200 hover:border-brand/20 transition-all"
                 >
                   {tag}
                 </Link>
@@ -161,7 +144,7 @@ export default function Home() {
       <section className="relative py-20 px-6 bg-slate-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-black mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
               Why Students Choose <span className="text-brand">Studentify</span>
             </h2>
             <p className="text-xl text-slate-600 max-w-2xl mx-auto">
@@ -204,7 +187,7 @@ export default function Home() {
                 <div className={`w-16 h-16 bg-${feature.color}/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
                   <feature.icon className={`w-8 h-8 text-${feature.color}`} />
                 </div>
-                <h3 className="text-2xl font-black mb-3">{feature.title}</h3>
+                <h3 className="text-2xl font-bold mb-3">{feature.title}</h3>
                 <p className="text-slate-600 leading-relaxed">{feature.description}</p>
               </motion.div>
             ))}
